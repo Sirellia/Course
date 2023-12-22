@@ -1,3 +1,114 @@
+from tkinter import Tk, Button, Entry, Label, Canvas, Frame
+
+class RegistrationLoginWindow:
+    def __init__(self, root):
+        self.root = root
+        self.root.title('Регистрация и Вход')
+        self.root.geometry("350x250")
+
+        self.label_frame = Frame(self.root)
+        self.label_frame.pack(pady=20)
+
+        self.window_width = 300
+        self.window_height = 200
+        self.center_window(self.root, self.window_width, self.window_height)
+
+        self.label_username = Label(self.label_frame, text="Логин:", font=("Arial", 12))
+        self.label_username.grid(row=0, column=0, padx=10, pady=5)
+
+        self.entry_username = Entry(self.label_frame, font=("Arial", 12))
+        self.entry_username.grid(row=0, column=1, padx=10, pady=5)
+
+        self.label_password = Label(self.label_frame, text="Пароль:", font=("Arial", 12))
+        self.label_password.grid(row=1, column=0, padx=10, pady=5)
+
+        self.entry_password = Entry(self.label_frame, show="*", font=("Arial", 12))
+        self.entry_password.grid(row=1, column=1, padx=10, pady=5)
+
+        self.button_register = Button(self.root, text="Зарегистрироваться", command=self.register, font=("Arial", 12))
+        self.button_register.pack(pady=10)
+
+        self.button_login = Button(self.root, text="Войти", command=self.login, font=("Arial", 12))
+        self.button_login.pack()
+    "Регистрация и проверка,что такого нет"
+    def register(self):
+        username = self.entry_username.get()
+        password = self.entry_password.get()
+
+        if username.strip() and password.strip():
+            if not self.check_user_exists(username):
+                # Записываем логин и пароль в файл
+                with open("users.txt", "a") as file:
+                    file.write(f"Логин: {username}, Пароль: {password}\n")
+                messagebox.showinfo("Регистрация", "Регистрация прошла успешно. Пожалуйста, войдите.")
+                self.clear_entries()
+            else:
+                messagebox.showerror("Ошибка", "Пользователь с таким именем уже существует")
+        else:
+            messagebox.showerror("Ошибка", "Введите имя пользователя и пароль")
+
+    "Логин и проверка в файле"
+    def login(self):
+        username = self.entry_username.get()
+        password = self.entry_password.get()
+
+
+        if self.check_user_credentials(username, password):
+            self.root.destroy()
+            self.open_main_window()
+        else:
+            messagebox.showerror("Ошибка", "Неверное имя пользователя или пароль")
+    "Проверка строк на наличие пользователя в базе"
+    def check_user_credentials(self, username, password):
+        with open("users.txt", "r") as file:
+            for line in file:
+
+                if f"Логин: {username}, Пароль: {password}" in line:
+                    return True
+        return False
+    "Ценрализация"
+    def center_window(self, window, width, height):
+        screen_width = window.winfo_screenwidth()
+        screen_height = window.winfo_screenheight()
+
+        x = (screen_width / 2) - (width / 2)
+        y = (screen_height / 2) - (height / 2)
+
+        window.geometry(f"{width}x{height}+{int(x)}+{int(y)}")
+    "Проверка логина в файле на повтор"
+    def check_user_exists(self, username):
+        with open("users.txt", "r") as file:
+            for line in file:
+                if f"Логин: {username}" in line:
+                    return True
+        return False
+    def clear_entries(self):
+        self.entry_username.delete(0, 'end')
+        self.entry_password.delete(0, 'end')
+    def open_main_window(self):
+        main_window = Tk()
+        main_window.title('Шашки')
+        "Централизация"
+        window_width = 675
+        window_height = 675
+        screen_width = main_window.winfo_screenwidth()
+        screen_height = main_window.winfo_screenheight()
+        x = (screen_width - window_width) // 2
+        y = (screen_height - window_height) // 2
+        main_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
+        main_window.resizable(0, 0)
+        "Создание холста"
+        main_canvas = Canvas(main_window, width=CELL_SIZE * 9, height=CELL_SIZE * 9)
+        main_canvas.pack()
+        game = Game(main_canvas, 9, 9)
+        main_canvas.bind("<Motion>", game.mouse_move)
+        main_canvas.bind("<Button-1>", game.mouse_down)
+
+        main_window.mainloop()
+def main():
+    root = Tk()
+    registration_login_window = RegistrationLoginWindow(root)
+    root.mainloop()
 class Point:
     def __init__(self, x: int = -1, y: int = -1):
         self.__x = x
@@ -659,117 +770,5 @@ class Game:
                             else:
                                 break
         return moves_list
-from tkinter import Tk, Button, Entry, Label, Canvas, Frame
-
-class RegistrationLoginWindow:
-    def __init__(self, root):
-        self.root = root
-        self.root.title('Регистрация и Вход')
-        self.root.geometry("350x250")
-
-        self.label_frame = Frame(self.root)
-        self.label_frame.pack(pady=20)
-
-        self.window_width = 300
-        self.window_height = 200
-        self.center_window(self.root, self.window_width, self.window_height)
-
-        self.label_username = Label(self.label_frame, text="Логин:", font=("Arial", 12))
-        self.label_username.grid(row=0, column=0, padx=10, pady=5)
-
-        self.entry_username = Entry(self.label_frame, font=("Arial", 12))
-        self.entry_username.grid(row=0, column=1, padx=10, pady=5)
-
-        self.label_password = Label(self.label_frame, text="Пароль:", font=("Arial", 12))
-        self.label_password.grid(row=1, column=0, padx=10, pady=5)
-
-        self.entry_password = Entry(self.label_frame, show="*", font=("Arial", 12))
-        self.entry_password.grid(row=1, column=1, padx=10, pady=5)
-
-        self.button_register = Button(self.root, text="Зарегистрироваться", command=self.register, font=("Arial", 12))
-        self.button_register.pack(pady=10)
-
-        self.button_login = Button(self.root, text="Войти", command=self.login, font=("Arial", 12))
-        self.button_login.pack()
-    "Регистрация и проверка,что такого нет"
-    def register(self):
-        username = self.entry_username.get()
-        password = self.entry_password.get()
-
-        if username.strip() and password.strip():
-            if not self.check_user_exists(username):
-                # Записываем логин и пароль в файл
-                with open("users.txt", "a") as file:
-                    file.write(f"Логин: {username}, Пароль: {password}\n")
-                messagebox.showinfo("Регистрация", "Регистрация прошла успешно. Пожалуйста, войдите.")
-                self.clear_entries()
-            else:
-                messagebox.showerror("Ошибка", "Пользователь с таким именем уже существует")
-        else:
-            messagebox.showerror("Ошибка", "Введите имя пользователя и пароль")
-
-    "Логин и проверка в файле"
-    def login(self):
-        username = self.entry_username.get()
-        password = self.entry_password.get()
-
-
-        if self.check_user_credentials(username, password):
-            self.root.destroy()
-            self.open_main_window()
-        else:
-            messagebox.showerror("Ошибка", "Неверное имя пользователя или пароль")
-    "Проверка строк на наличие пользователя в базе"
-    def check_user_credentials(self, username, password):
-        with open("users.txt", "r") as file:
-            for line in file:
-
-                if f"Логин: {username}, Пароль: {password}" in line:
-                    return True
-        return False
-    "Ценрализация"
-    def center_window(self, window, width, height):
-        screen_width = window.winfo_screenwidth()
-        screen_height = window.winfo_screenheight()
-
-        x = (screen_width / 2) - (width / 2)
-        y = (screen_height / 2) - (height / 2)
-
-        window.geometry(f"{width}x{height}+{int(x)}+{int(y)}")
-    "Проверка логина в файле на повтор"
-    def check_user_exists(self, username):
-        with open("users.txt", "r") as file:
-            for line in file:
-                if f"Логин: {username}" in line:
-                    return True
-        return False
-    def clear_entries(self):
-        self.entry_username.delete(0, 'end')
-        self.entry_password.delete(0, 'end')
-    def open_main_window(self):
-        main_window = Tk()
-        main_window.title('Шашки')
-        "Централизация"
-        window_width = 675
-        window_height = 675
-        screen_width = main_window.winfo_screenwidth()
-        screen_height = main_window.winfo_screenheight()
-        x = (screen_width - window_width) // 2
-        y = (screen_height - window_height) // 2
-        main_window.geometry(f"{window_width}x{window_height}+{x}+{y}")
-        main_window.resizable(0, 0)
-        "Создание холста"
-        main_canvas = Canvas(main_window, width=CELL_SIZE * 9, height=CELL_SIZE * 9)
-        main_canvas.pack()
-        game = Game(main_canvas, 9, 9)
-        main_canvas.bind("<Motion>", game.mouse_move)
-        main_canvas.bind("<Button-1>", game.mouse_down)
-
-        main_window.mainloop()
-def main():
-    root = Tk()
-    registration_login_window = RegistrationLoginWindow(root)
-    root.mainloop()
-
 if __name__ == '__main__':
     main()
