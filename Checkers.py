@@ -30,14 +30,13 @@ class RegistrationLoginWindow:
 
         self.button_login = Button(self.root, text="Войти", command=self.login, font=("Arial", 12))
         self.button_login.pack()
-    "Регистрация и проверка,что такого нет"
+    "Регистрация и проверка"
     def register(self):
         username = self.entry_username.get()
         password = self.entry_password.get()
 
         if username.strip() and password.strip():
             if not self.check_user_exists(username):
-                # Записываем логин и пароль в файл
                 with open("users.txt", "a") as file:
                     file.write(f"Логин: {username}, Пароль: {password}\n")
                 messagebox.showinfo("Регистрация", "Регистрация прошла успешно. Пожалуйста, войдите.")
@@ -62,7 +61,6 @@ class RegistrationLoginWindow:
     def check_user_credentials(self, username, password):
         with open("users.txt", "r") as file:
             for line in file:
-
                 if f"Логин: {username}, Пароль: {password}" in line:
                     return True
         return False
@@ -194,7 +192,7 @@ class CheckerType(Enum):
 PLAYER_SIDE = SideType.WHITE
 # Размер поля
 CELL_SIZE = 75
-# Скорость анимации (больше = быстрее)
+# Анимация
 ANIMATION_SPEED = 7
 MAX_PREDICTION_DEPTH = 3
 BORDER_WIDTH = 1 * 2
