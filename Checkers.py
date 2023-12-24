@@ -25,18 +25,19 @@ class RegistrationLoginWindow:
         self.entry_password = Entry(self.label_frame, show="*", font=("Arial", 12))
         self.entry_password.grid(row=1, column=1, padx=10, pady=5)
 
-        self.button_register = Button(self.root, text="Зарегистрироваться", command=self.register, font=("Arial", 12))
+        self.button_register = Button(self.root, text="Регистрация", command=self.register, font=("Arial", 12))
         self.button_register.pack(pady=10)
 
-        self.button_login = Button(self.root, text="Войти", command=self.login, font=("Arial", 12))
+        self.button_login = Button(self.root, text="Вход", command=self.login, font=("Arial", 12))
         self.button_login.pack()
-    "Регистрация и проверка"
+    "Регистрация и проверка,что такого нет"
     def register(self):
         username = self.entry_username.get()
         password = self.entry_password.get()
 
         if username.strip() and password.strip():
             if not self.check_user_exists(username):
+                # Записываем логин и пароль в файл
                 with open("users.txt", "a") as file:
                     file.write(f"Логин: {username}, Пароль: {password}\n")
                 messagebox.showinfo("Регистрация", "Регистрация прошла успешно. Пожалуйста, войдите.")
@@ -61,6 +62,7 @@ class RegistrationLoginWindow:
     def check_user_credentials(self, username, password):
         with open("users.txt", "r") as file:
             for line in file:
+
                 if f"Логин: {username}, Пароль: {password}" in line:
                     return True
         return False
@@ -186,21 +188,17 @@ class CheckerType(Enum):
     BLACK_QUEEN = auto()
     WHITE_KING = auto()
     BLACK_KING = auto()
-
-
-#Выбор стороны
+#Константы
 PLAYER_SIDE = SideType.WHITE
-# Размер поля
 CELL_SIZE = 75
-# Анимация
 ANIMATION_SPEED = 7
 MAX_PREDICTION_DEPTH = 3
-BORDER_WIDTH = 1 * 2
+BORDER_WIDTH = 2 * 2
 # Цвета
 FIELD_COLORS = ['#f2f1ed', '#0d0d0c']
 HOVER_BORDER_COLOR = '#54b346'
 SELECT_BORDER_COLOR = '#800000'
-POSIBLE_MOVE_CIRCLE_COLOR = '#800000'
+POSIBLE_MOVE_CIRCLE_COLOR = '#73c2fb'
 MOVE_OFFSETS = [
     Point(-1, -1),
     Point( 1, -1),
@@ -348,7 +346,7 @@ class Game:
             self.__handle_enemy_turn()
 
     def __initialization_images(self):
-        "Загрузка картинок"
+        #Картинки
 
         self.__images = {
             CheckerType.WHITE_REGULAR: ImageTk.PhotoImage(
@@ -768,5 +766,7 @@ class Game:
                             else:
                                 break
         return moves_list
+
+
 if __name__ == '__main__':
     main()
