@@ -188,7 +188,6 @@ class CheckerType(Enum):
     BLACK_QUEEN = auto()
     WHITE_KING = auto()
     BLACK_KING = auto()
-#Константы
 PLAYER_SIDE = SideType.WHITE
 CELL_SIZE = 75
 ANIMATION_SPEED = 7
@@ -274,7 +273,7 @@ class Field:
         #Тип шашки по координатам
         return self.__checkers[y][x].type
 
-    def kingScore(self):
+    def killKing(self):
         #Убийство короля
         for y in range(self.y_size):
             for x in range(self.x_size):
@@ -416,7 +415,7 @@ class Game:
                     player_moves_list = self.__get_moves_list(PLAYER_SIDE)
                     for move in player_moves_list:
                         if (self.__selected_cell.x == move.from_x and self.__selected_cell.y == move.from_y):
-                            self.__canvas.create_oval(move.to_x * CELL_SIZE + CELL_SIZE / 3,
+                            self.__canvas.create_rectangle(move.to_x * CELL_SIZE + CELL_SIZE / 3,
                                                       move.to_y * CELL_SIZE + CELL_SIZE / 3,
                                                       move.to_x * CELL_SIZE + (CELL_SIZE - CELL_SIZE / 3),
                                                       move.to_y * CELL_SIZE + (CELL_SIZE - CELL_SIZE / 3),
@@ -554,7 +553,7 @@ class Game:
             # Чёрные проиграли
             answer = messagebox.showinfo('Конец игры', 'Белые выиграли')
             game_over = True
-        if self.__field.kingScore():
+        if self.__field.killKing():
             if self.__field.flagWK:
                 # Черные проиграли
                 answer = messagebox.showinfo('Конец игры', 'Белые выиграли')
