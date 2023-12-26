@@ -30,7 +30,7 @@ class RegistrationLoginWindow:
 
         self.button_login = Button(self.root, text="Вход", command=self.login, font=("Arial", 12))
         self.button_login.pack()
-    "Регистрация и проверка,что такого нет"
+    #Регистрация и проверка,что такого нет
     def register(self):
         username = self.entry_username.get()
         password = self.entry_password.get()
@@ -47,7 +47,7 @@ class RegistrationLoginWindow:
         else:
             messagebox.showerror("Ошибка", "Введите имя пользователя и пароль")
 
-    "Логин и проверка в файле"
+    #Логин и проверка в файле
     def login(self):
         username = self.entry_username.get()
         password = self.entry_password.get()
@@ -58,7 +58,7 @@ class RegistrationLoginWindow:
             self.open_main_window()
         else:
             messagebox.showerror("Ошибка", "Неверное имя пользователя или пароль")
-    "Проверка строк на наличие пользователя в базе"
+    #Проверка строк на наличие пользователя в базе
     def check_user_credentials(self, username, password):
         with open("users.txt", "r") as file:
             for line in file:
@@ -66,7 +66,7 @@ class RegistrationLoginWindow:
                 if f"Логин: {username}, Пароль: {password}" in line:
                     return True
         return False
-    "Ценрализация"
+    #Централизация
     def center_window(self, window, width, height):
         screen_width = window.winfo_screenwidth()
         screen_height = window.winfo_screenheight()
@@ -75,7 +75,7 @@ class RegistrationLoginWindow:
         y = (screen_height / 2) - (height / 2)
 
         window.geometry(f"{width}x{height}+{int(x)}+{int(y)}")
-    "Проверка логина в файле на повтор"
+    #Проверяем на повторяемый логин
     def check_user_exists(self, username):
         with open("users.txt", "r") as file:
             for line in file:
@@ -217,7 +217,7 @@ class Checker:
         return self.__type
 
     def change_type(self, type: CheckerType):
-        "Изменение типа шашки"
+        #изменение типа шашки
         self.__type = type
 
 from functools import reduce
@@ -245,7 +245,7 @@ class Field:
 
     @classmethod
     def copy(cls, field_instance):
-        "Копия поля"
+        #копия поля
         field_copy = cls(field_instance.x_size, field_instance.y_size)
 
         for y in range(field_instance.y_size):
@@ -255,7 +255,7 @@ class Field:
         return field_copy
 
     def __generate(self):
-        "Генерация поля с шашками"
+        #Генерация поля с шашками
         self.__checkers = [[Checker() for x in range(self.x_size)] for y in range(self.y_size)]
 
         for y in range(self.y_size):
@@ -271,11 +271,11 @@ class Field:
                             self.__checkers[y][x].change_type(CheckerType.WHITE_KING)
 
     def type_piece(self, x: int, y: int) -> CheckerType:
-        "Тип шашки по координатам"
+        #Тип шашки по координатам
         return self.__checkers[y][x].type
 
     def kingScore(self):
-        "Убийство Вождя"
+        #Убийство короля
         for y in range(self.y_size):
             for x in range(self.x_size):
                 if self.type_piece(x, y) == CheckerType.WHITE_KING:
@@ -288,35 +288,35 @@ class Field:
             return True
 
     def at_coordinate(self, x: int, y: int) -> Checker:
-        "Получение шашки по координатам"
+        #Координаты шашки по координатам
         return self.__checkers[y][x]
 
     def is_within_in_field(self, x: int, y: int) -> bool:
-        "В пределах поля или нет"
+        #В пределах поля или нет
         return (0 <= x < self.x_size and 0 <= y < self.y_size)
 
     @property
     def white_checkers_count(self) -> int:
-        "Кол-во белых шашек на поле"
+        #Количество белых шашек на поля
         return sum(reduce(lambda acc, checker: acc + (checker.type in WHITE_CHECKERS), checkers, 0) for checkers in
                    self.__checkers)
 
     @property
     def black_checkers_count(self) -> int:
-        "Кол-во чёрных шашек на поле"
+        #Количество чёрных шашек на поле
         return sum(reduce(lambda acc, checker: acc + (checker.type in BLACK_CHECKERS), checkers, 0) for checkers in
                    self.__checkers)
 
     @property
     def white_score(self) -> int:
-        "Счёт белых"
+        #Счёт белых
         return sum(reduce(lambda acc, checker: acc + (checker.type == CheckerType.WHITE_REGULAR) + (
                     checker.type == CheckerType.WHITE_QUEEN) * 3 + (checker.type == CheckerType.WHITE_KING) * 100,
                           checkers, 0) for checkers in self.__checkers)
 
     @property
     def black_score(self) -> int:
-        "Счёт черных"
+        #Счёт чёрных
         return sum(reduce(lambda acc, checker: acc + (checker.type == CheckerType.BLACK_REGULAR) + (
                     checker.type == CheckerType.BLACK_QUEEN) * 3 + (checker.type == CheckerType.BLACK_KING) * 100,
                           checkers, 0) for checkers in self.__checkers)
@@ -363,7 +363,7 @@ class Game:
                 Image.open(Path('pngs', 'black-king.png')).resize((CELL_SIZE, CELL_SIZE), Image.ANTIALIAS))
         }
     def __animate_move(self, move: Move):
-        "Перемещение шашки(анимация)"
+        #Перемещение шашки(анимация)
         self.__animated_cell = Point(move.from_x, move.from_y)
         self.__draw_field()
 
@@ -386,13 +386,13 @@ class Game:
         self.__animated_cell = Point()
 
     def __draw_field(self):
-        "Рисовка сетки и поля"
+        #Рисовка сетки и поля
         self.__canvas.delete('all')
         self.__draw_field_grid()
         self.__draw_checkers()
 
     def __draw_field_grid(self):
-        "Сетка поля"
+        #Сетка поля"
         for y in range(self.__field.y_size):
             for x in range(self.__field.x_size):
                 self.__canvas.create_rectangle(x * CELL_SIZE, y * CELL_SIZE, x * CELL_SIZE + CELL_SIZE,
@@ -424,7 +424,7 @@ class Game:
                                                       tag='posible_move_circle')
 
     def __draw_checkers(self):
-        "Шашки"
+        #Сетка поля
         for y in range(self.__field.y_size):
             for x in range(self.__field.x_size):
                 # Не отрисовывать пустые ячейки и анимируемую шашку
@@ -435,7 +435,7 @@ class Game:
                                                tag='checkers')
 
     def mouse_move(self, event: Event):
-        "Перемещение мышки"
+        #Перемещение мышки"
         x, y = (event.x) // CELL_SIZE, (event.y) // CELL_SIZE
         if (x != self.__hovered_cell.x or y != self.__hovered_cell.y):
             self.__hovered_cell = Point(x, y)
@@ -445,7 +445,7 @@ class Game:
                 self.__draw_field()
 
     def mouse_down(self, event: Event):
-        "Нажатие мышки"
+        #Перемещение мышки"
         if not (self.__player_turn): return
 
         x, y = (event.x) // CELL_SIZE, (event.y) // CELL_SIZE
@@ -476,7 +476,7 @@ class Game:
                     self.__handle_enemy_turn()
 
     def __handle_move(self, move: Move, draw: bool = True) -> bool:
-        "Совершение хода"
+        #Совершение хода
         if (draw): self.__animate_move(move)
 
         # Изменение типа шашки, если она дошла до края
@@ -510,7 +510,7 @@ class Game:
         return has_killed_checker
 
     def __handle_player_turn(self, move: Move):
-        "Обработка хода игрока"
+        #Обработка хода игрока
         self.__player_turn = False
 
         # Была ли убита шашка
@@ -527,7 +527,7 @@ class Game:
         self.__selected_cell = Point()
 
     def __handle_enemy_turn(self):
-        "Обработка хода противника (компьютера)"
+        #Обработка хода противника (компьютера)
         self.__player_turn = False
 
         optimal_moves_list = self.__predict_optimal_moves(SideType.opposite(PLAYER_SIDE))
@@ -540,7 +540,7 @@ class Game:
         self.__check_for_game_over()
 
     def __check_for_game_over(self):
-        "Проверка на конец игры"
+        #Проверка на конец игры
         game_over = False
 
         white_moves_list = self.__get_moves_list(SideType.WHITE)
@@ -568,7 +568,7 @@ class Game:
             self.__init__(self.__canvas, self.__field.x_size, self.__field.y_size)
 
     def __predict_optimal_moves(self, side: SideType) -> list[Move]:
-        "Предскать оптимальный ход"
+        #Предскать оптимальный ход
         best_result = 0
         optimal_moves = []
         predicted_moves_list = self.__get_predicted_moves_list(side)
@@ -612,7 +612,7 @@ class Game:
     def __get_predicted_moves_list(self, side: SideType, current_prediction_depth: int = 0,
                                    all_moves_list: list[Move] = [], current_moves_list: list[Move] = [],
                                    required_moves_list: list[Move] = []) -> list[Move]:
-        "Предсказать все возможные ходы"
+        #Предсказать все возможные ходы
 
         if (current_moves_list):
             all_moves_list.append(current_moves_list)
@@ -646,14 +646,14 @@ class Game:
         return all_moves_list
 
     def __get_moves_list(self, side: SideType) -> list[Move]:
-        "Список ходов"
+        #Список ходов
         moves_list = self.__get_required_moves_list(side)
         if not (moves_list):
             moves_list = self.__get_optional_moves_list(side)
         return moves_list
 
     def __get_required_moves_list(self, side: SideType) -> list[Move]:
-        "Обязательные ходы"
+        #Обязательные ходы
         moves_list = []
 
         # Определение типов шашек
@@ -722,7 +722,7 @@ class Game:
         return moves_list
 
     def __get_optional_moves_list(self, side: SideType) -> list[Move]:
-        "Необязательные ходы"
+        #Необязательные ходы
         moves_list = []
 
         # Определение типов шашек
