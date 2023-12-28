@@ -412,7 +412,7 @@ class Game:
 
                 # Отрисовка возможных точек перемещения, если есть выбранная ячейка
                 if (self.__selected_cell):
-                    player_moves_list = self.__get_moves_list(PLAYER_SIDE)
+                    player_moves_list = self.__moves_list(PLAYER_SIDE)
                     for move in player_moves_list:
                         if (self.__selected_cell.x == move.from_x and self.__selected_cell.y == move.from_y):
                             self.__canvas.create_rectangle(move.to_x * CELL_SIZE + CELL_SIZE / 3,
@@ -467,7 +467,7 @@ class Game:
             move = Move(self.__selected_cell.x, self.__selected_cell.y, x, y)
 
             # Если нажатие по ячейке, на которую можно походить
-            if (move in self.__get_moves_list(PLAYER_SIDE)):
+            if (move in self.__moves_list(PLAYER_SIDE)):
                 self.__handle_player_turn(move)
 
                 # Если не ход игрока, то ход противника
@@ -517,7 +517,7 @@ class Game:
 
         required_moves_list = list(
             filter(lambda required_move: move.to_x == required_move.from_x and move.to_y == required_move.from_y,
-                   self.__get_required_moves_list(PLAYER_SIDE)))
+                   self.__required_moves_(PLAYER_SIDE)))
 
         # Если есть ещё ход этой же шашкой
         if (has_killed_checker and required_moves_list):
@@ -542,13 +542,13 @@ class Game:
         #Проверка на конец игры
         game_over = False
 
-        white_moves_list = self.__get_moves_list(SideType.WHITE)
+        white_moves_list = self.__moves_list(SideType.WHITE)
         if not (white_moves_list):
             # Белые проиграли
             answer = messagebox.showinfo('Конец игры', 'Чёрные выиграли')
             game_over = True
 
-        black_moves_list = self.__get_moves_list(SideType.BLACK)
+        black_moves_list = self.__moves_list(SideType.BLACK)
         if not (black_moves_list):
             # Чёрные проиграли
             answer = messagebox.showinfo('Конец игры', 'Белые выиграли')
@@ -570,7 +570,7 @@ class Game:
         #Предскать оптимальный ход
         best_result = 0
         optimal_moves = []
-        predicted_moves_list = self.__get_predicted_moves_list(side)
+        predicted_moves_list = self.__predicted_moves_(side)
 
         if (predicted_moves_list):
             field_copy = Field.copy(self.__field)
@@ -608,7 +608,7 @@ class Game:
 
         return optimal_move
 
-    def __get_predicted_moves_list(self, side: SideType, current_prediction_depth: int = 0,
+    def __predicted_moves_(self, side: SideType, current_prediction_depth: int = 0,
                                    all_moves_list: list[Move] = [], current_moves_list: list[Move] = [],
                                    required_moves_list: list[Move] = []) -> list[Move]:
         #Предсказать все возможные ходы
@@ -621,7 +621,7 @@ class Game:
         if (required_moves_list):
             moves_list = required_moves_list
         else:
-            moves_list = self.__get_moves_list(side)
+            moves_list = self.__moves_list(side)
 
         if (moves_list and current_prediction_depth < MAX_PREDICTION_DEPTH):
             field_copy = Field.copy(self.__field)
@@ -630,28 +630,28 @@ class Game:
 
                 required_moves_list = list(filter(
                     lambda required_move: move.to_x == required_move.from_x and move.to_y == required_move.from_y,
-                    self.__get_required_moves_list(side)))
+                    self.__required_moves_(side)))
 
                 # Если есть ещё ход этой же шашкой
                 if (has_killed_checker and required_moves_list):
-                    self.__get_predicted_moves_list(side, current_prediction_depth, all_moves_list,
-                                                    current_moves_list + [move], required_moves_list)
+                    self.__predicted_moves_(side, current_prediction_depth, all_moves_list, current_moves_list + [move],
+                                            required_moves_list)
                 else:
-                    self.__get_predicted_moves_list(SideType.opposite(side), current_prediction_depth + 1,
-                                                    all_moves_list, current_moves_list + [move])
+                    self.__predicted_moves_(SideType.opposite(side), current_prediction_depth + 1, all_moves_list,
+                                            current_moves_list + [move])
 
                 self.__field = Field.copy(field_copy)
 
         return all_moves_list
 
-    def __get_moves_list(self, side: SideType) -> list[Move]:
+    def __moves_list(self, side: SideType) -> list[Move]:
         #Список ходов
-        moves_list = self.__get_required_moves_list(side)
+        moves_list = self.__required_moves_(side)
         if not (moves_list):
-            moves_list = self.__get_optional_moves_list(side)
+            moves_list = self.__optional_moves_(side)
         return moves_list
 
-    def __get_required_moves_list(self, side: SideType) -> list[Move]:
+    def __required_moves_(self, side: SideType) -> list[Move]:
         #Обязательные ходы
         moves_list = []
 
@@ -720,7 +720,7 @@ class Game:
 
         return moves_list
 
-    def __get_optional_moves_list(self, side: SideType) -> list[Move]:
+    def __optional_moves_(self, side: SideType) -> list[Move]:
         #Необязательные ходы
         moves_list = []
 
